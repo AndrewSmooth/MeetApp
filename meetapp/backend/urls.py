@@ -1,11 +1,12 @@
 from django.urls import path, include
 from .views import main
 from users import views as user_views
-
+from .views import CreateProfileView
 
 app_name = "backend"
 
 urlpatterns = [  
+    path('accounts/profile/create/', CreateProfileView.as_view(), name='profile_create'),
     path('accounts/profile/delete/', user_views.DeleteUserView.as_view(), name='profile_delete'),
     path ('accounts/profile/change/', user_views.ChangeUserlnfoView.as_view(), name='profile_change'),
     #path ('accounts/profile/', profile, name='profile'),

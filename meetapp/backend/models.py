@@ -37,20 +37,20 @@ class AdvUser(AbstractUser):
     
 
 class Profile(models.Model):
-    name = models.CharField(max_length=20, blank=False, verbose_name='Имя')
-    age = models.IntegerField(db_index = True, blank=False, verbose_name = 'Возраст')
+    name = models.CharField(max_length=20, blank=False, verbose_name='Твое имя')
+    age = models.IntegerField(db_index = True, blank=False, verbose_name = 'Возраст', min = 18)
     city = models.CharField(max_length=168, db_index = True, blank=False, verbose_name='Город')
-    description = models.TextField(blank=True, null=True, verbose_name='О себе')
+    description = models.TextField(blank=True, null=True, verbose_name='Расскажи о себе')
     gender = models.CharField(max_length=10, db_index=True, blank=False, verbose_name='Пол')
-    children = models.BooleanField(blank=True, null=True, verbose_name='Есть дети?')
+    children = models.CharField(max_length=4, blank=True, null=True, verbose_name='У тебя есть дети?')
     education = models.CharField(max_length=150, blank=True, null=True, verbose_name='Образование')
     profession = models.CharField(max_length=50, blank=True, null=True, verbose_name='Должность на работе')
     languages = models.ManyToManyField(Language, through='LanguageProfile', verbose_name='Языки')
     tags = models.ManyToManyField(Tag, through='TagProfile', verbose_name='Теги')
     images = models.ManyToManyField(Image, through='ImageProfile', verbose_name='Фото')
-    alcohol = models.BooleanField(verbose_name='Алкоголь', blank=True, null=True,)
-    smoke = models.BooleanField(verbose_name='Курение', blank=True, null=True,)
-    horoscope = models.CharField(max_length=25, blank=True, null=True, verbose_name='Знак по гороскопу')
+    alcohol = models.CharField(max_length=30, verbose_name='Алкоголь', blank=True, null=True,)
+    smoke = models.CharField(verbose_name='Курение', blank=True, null=True,)
+    horoscope = models.CharField(max_length=25, blank=True, null=True, verbose_name='Знак зодиака')
     target = models.CharField(max_length=35, blank=True, null=True, verbose_name='Цель')
     #isOnline
     #last_online
