@@ -31,8 +31,8 @@ class AdvUser(AbstractUser):
     send_messages = models.BooleanField(default = True, verbose_name = 'Уведомлять о сообщениях?')
 
     def delete(self, *args, **kwargs):
-        for item in self.item_set.all():
-            item.delete()
+        # for item in self.item_set.all():
+        #     item.delete()
         super().delete(*args, **kwargs)
     
 

@@ -26,7 +26,7 @@ from django.core.mail import send_mail
 
 class DeleteUserView(LoginRequiredMixin, DeleteView):
     model = AdvUser
-    template_name = 'todolist/delete_user.html'
+    template_name = 'users/delete_user.html'
     success_url = reverse_lazy('backend:start')
                                
     def setup(self, request, *args, **kwargs):
@@ -50,12 +50,12 @@ def user_activate(request, sign):
     try:
         username = signer.unsign(sign)
     except BadSignature:
-        return render(request, 'todolist/bad_signature.html')
+        return render(request, 'users/bad_signature.html')
     user = get_object_or_404(AdvUser, username=username)
     if user.is_activated:
-        template = 'todolist/user_is_activated.html'
+        template = 'users/user_is_activated.html'
     else:
-        template = 'todolist/activation_done.html'
+        template = 'users/activation_done.html'
     user.is_active = True
     user.is_activated = True
     user.save()
@@ -65,7 +65,7 @@ def SetNewPasswordView(request, sign):
     try:
         username = signer.unsign(sign)
     except BadSignature:
-        return render(request, 'todolist/bad_signature.html')
+        return render(request, 'users/bad_signature.html')
     user = get_object_or_404(AdvUser, username=username)
     if user:
         if request.method == 'POST':
@@ -81,26 +81,26 @@ def SetNewPasswordView(request, sign):
                 else:
                     user.set_password(form.cleaned_data['password1'])
                     user.save()
-                    return render(request, 'todolist/password_reset_confirm.html')
+                    return render(request, 'users/password_reset_confirm.html')
         else:
             form = SetPasswordForm()
-            return render(request, 'todolist/set_password.html', {'form': form})
+            return render(request, 'users/set_password.html', {'form': form})
 
 
 class RegisterDoneView(TemplateView):
-    template_name = 'todolist/register_done.html'
+    template_name = 'users/register_done.html'
 
 
 class RegisterUserView(CreateView):
     model = AdvUser
-    template_name = 'todolist/register_user.html'
+    template_name = 'users/register_user.html'
     form_class = RegisterUserForm
     success_url = reverse_lazy('backend:register_done')
 
 
-class TodoPasswordChangeView(SuccessMessageMixin, LoginRequiredMixin, PasswordChangeView):
-    template_name = 'todolist/password_change.html'
-    success_url = reverse_lazy('backend:profile')
+class UserPasswordChangeView(SuccessMessageMixin, LoginRequiredMixin, PasswordChangeView):
+    template_name = 'users/password_change.html'
+    success_url = reverse_lazy('backend:start')
     success_message = 'Пароль пользователя изменен'
 
 def send_instruction(request):
@@ -115,17 +115,17 @@ def send_instruction(request):
                 subject, body = letter[0], letter[1]
 
                 send_mail(subject, body, 'gladkiy.a2004@gmail.com', [email,])
-                return render(request, 'todolist/password_reset_done.html')
+                return render(request, 'users/password_reset_done.html')
     else:
         form = ResetUserPasswordForm
-        return render(request, 'todolist/password_reset.html', {'form': form})
+        return render(request, 'users/password_reset.html', {'form': form})
 
 class ChangeUserlnfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = AdvUser
-    template_name = 'todolist/change_user_info.html'
+    template_name = 'users/change_user_info.html'
     form_class = ChangeUserlnfoForm
-    success_url = reverse_lazy ('backend:profile')
-    # success_message = 'Данные пользователя изменены'
+    success_url = reverse_lazy ('backend:start')
+    success_message = 'Данные пользователя изменены'
 
     def setup(self, request, *args, **kwargs):
         self.user_id = request.user.pk
@@ -137,9 +137,9 @@ class ChangeUserlnfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return get_object_or_404(queryset, pk=self.user_id)
 
 
-class TodoLogoutView(LoginRequiredMixin, LogoutView):
-    template_name = 'todolist/logout.html'
+class UserLogoutView(LoginRequiredMixin, LogoutView):
+    template_name = 'users/logout.html'
 
 
-class TodoLoginView(LoginView):
-    template_name = 'todolist/login.html'
+class UserLoginView(LoginView):
+    template_name = 'users/login.html'
