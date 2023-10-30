@@ -38,7 +38,7 @@ class AdvUser(AbstractUser):
 
 class Profile(models.Model):
     name = models.CharField(max_length=20, blank=False, verbose_name='Твое имя')
-    age = models.IntegerField(db_index = True, blank=False, verbose_name = 'Возраст', min = 18)
+    age = models.IntegerField(db_index = True, blank=False, verbose_name = 'Возраст')
     city = models.CharField(max_length=168, db_index = True, blank=False, verbose_name='Город')
     description = models.TextField(blank=True, null=True, verbose_name='Расскажи о себе')
     gender = models.CharField(max_length=10, db_index=True, blank=False, verbose_name='Пол')

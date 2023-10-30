@@ -27,7 +27,7 @@ from django.core.mail import send_mail
 class DeleteUserView(LoginRequiredMixin, DeleteView):
     model = AdvUser
     template_name = 'todolist/delete_user.html'
-    success_url = reverse_lazy('todolist:start')
+    success_url = reverse_lazy('backend:start')
                                
     def setup(self, request, *args, **kwargs):
         self.user_id = request.user.pk
@@ -95,12 +95,12 @@ class RegisterUserView(CreateView):
     model = AdvUser
     template_name = 'todolist/register_user.html'
     form_class = RegisterUserForm
-    success_url = reverse_lazy('todolist:register_done')
+    success_url = reverse_lazy('backend:register_done')
 
 
 class TodoPasswordChangeView(SuccessMessageMixin, LoginRequiredMixin, PasswordChangeView):
     template_name = 'todolist/password_change.html'
-    success_url = reverse_lazy('todolist:profile')
+    success_url = reverse_lazy('backend:profile')
     success_message = 'Пароль пользователя изменен'
 
 def send_instruction(request):
@@ -124,7 +124,7 @@ class ChangeUserlnfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = AdvUser
     template_name = 'todolist/change_user_info.html'
     form_class = ChangeUserlnfoForm
-    success_url = reverse_lazy ('todolist:profile')
+    success_url = reverse_lazy ('backend:profile')
     # success_message = 'Данные пользователя изменены'
 
     def setup(self, request, *args, **kwargs):

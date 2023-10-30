@@ -12,9 +12,9 @@
 <form method="post">
     {% csrf_token %}
     {% bootstrap_form form layout="horizontal" %}
-    <input type="hidden" name="next" value="all-tasks">
+    <input type="hidden" name="next" value="start">
     {% buttons submit="Войти" %}{% endbuttons %}
-    <a class="nav-link" href="{% url 'todolist:password_reset' %}">Забыли пароль?<span class="sr-only">(current)</span></a>
+    <a class="nav-link" href="{% url 'backend:password_reset' %}">Забыли пароль?<span class="sr-only">(current)</span></a>
 </form>
 {% endif %}
 {% endblock %}

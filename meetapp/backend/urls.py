@@ -19,6 +19,6 @@ urlpatterns = [
     path ('accounts/register/done/', user_views.RegisterDoneView.as_view(), name='register_done'),
     path ('accounts/register/', user_views.RegisterUserView.as_view(), name='register'),
     path('accounts/login', user_views.TodoLoginView.as_view(), name='login' ),
-    #path('accounts/all-tasks', all_tasks, name='all-tasks'),
+    path('accounts/start', main, name='start'),  
     path('', main, name='start'),  
 ]
