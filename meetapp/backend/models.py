@@ -1,9 +1,16 @@
+from typing import Any
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.utils import timezone
+from django.core.cache import cache
 
 class Language(models.Model):
     name = models.CharField(max_length=30, verbose_name='Язык')
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name = 'Язык'
@@ -13,72 +20,84 @@ class Language(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=40, verbose_name='Тег')
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
 
-class Image(models.Model):
-    url = models.TextField(verbose_name='URL изображения')
-
-    class Meta:
-        verbose_name = 'Фото'
-        verbose_name_plural = 'Фото'
-    
-
 class AdvUser(AbstractUser):
     is_activated = models.BooleanField(default=True, db_index = True, verbose_name = 'Прощёл активацию?')
     send_messages = models.BooleanField(default = True, verbose_name = 'Уведомлять о сообщениях?')
 
-    def delete(self, *args, **kwargs):
-        # for item in self.item_set.all():
-        #     item.delete()
-        super().delete(*args, **kwargs)
+    last_online = models.DateTimeField(blank=True, null=True, verbose_name='Последний онлайн')
+
+    def is_online(self):
+        if self.last_online:
+            return (timezone.now() - self.last_online) < timezone.timedelta(minutes=15)
+        return False
+
+    def get_online_info(self):
+        if self.is_online():
     
+            return ('Online')
+        if self.last_online:
+        
+            return ('Last visit {}').format(naturaltime(self.last_online))
+            
+        return ('Unknown')
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+
 
 class Profile(models.Model):
-    name = models.CharField(max_length=20, blank=False, verbose_name='Твое имя')
+    name = models.CharField(max_length=20, blank=False, verbose_name='Имя')
     age = models.IntegerField(db_index = True, blank=False, verbose_name = 'Возраст')
     city = models.CharField(max_length=168, db_index = True, blank=False, verbose_name='Город')
     description = models.TextField(blank=True, null=True, verbose_name='Расскажи о себе')
     gender = models.CharField(max_length=10, db_index=True, blank=False, verbose_name='Пол')
-    children = models.CharField(max_length=4, blank=True, null=True, verbose_name='У тебя есть дети?')
+    children = models.CharField(max_length=4, blank=True, null=True, verbose_name='Дети')
     education = models.CharField(max_length=150, blank=True, null=True, verbose_name='Образование')
-    profession = models.CharField(max_length=50, blank=True, null=True, verbose_name='Должность на работе')
+    profession = models.CharField(max_length=50, blank=True, null=True, verbose_name='Работа')
     languages = models.ManyToManyField(Language, through='LanguageProfile', verbose_name='Языки')
-    tags = models.ManyToManyField(Tag, through='TagProfile', verbose_name='Теги')
-    images = models.ManyToManyField(Image, through='ImageProfile', verbose_name='Фото')
+    tags = models.ManyToManyField(Tag, through='TagProfile', verbose_name='Интересы')
+    images = models.TextField(verbose_name= 'url фото', blank=False, null=False, default=' ')
     alcohol = models.CharField(max_length=30, verbose_name='Алкоголь', blank=True, null=True,)
     smoke = models.CharField(verbose_name='Курение', blank=True, null=True,)
     horoscope = models.CharField(max_length=25, blank=True, null=True, verbose_name='Знак зодиака')
     target = models.CharField(max_length=35, blank=True, null=True, verbose_name='Цель')
-    #isOnline
-    #last_online
+
+    def __str__(self):
+        return self.name
+    
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Анкета'
         verbose_name_plural = 'Анкеты'
-
 
 class LanguageProfile(models.Model):
     language = models.ForeignKey(Language, on_delete=models.RESTRICT, verbose_name='Язык')
     profile = models.ForeignKey(Profile, on_delete=models.RESTRICT, verbose_name='Анкета пользователя')
 
     class Meta:
-        verbose_name = 'Язык'
-        verbose_name_plural = 'Языки'
+        verbose_name = 'ЯзыкАнкета'
+        verbose_name_plural = 'ЯзыкиАнкеты'
 
 
 class TagProfile(models.Model):
-    tag = models.ForeignKey(Tag, on_delete=models.RESTRICT, verbose_name='Тег')
+    tag = models.ForeignKey(Tag, on_delete= models.RESTRICT, verbose_name='Тег')
     profile = models.ForeignKey(Profile, on_delete=models.RESTRICT, verbose_name='Анкета пользователя')
 
     class Meta:
-        verbose_name = 'Тег'
-        verbose_name_plural = 'Теги'
-
-
-class ImageProfile(models.Model):
-    image = models.ForeignKey(Image, on_delete=models.RESTRICT, verbose_name='Фото')
-    profile = models.ForeignKey(Profile, on_delete=models.RESTRICT, verbose_name='Анкета пользователя')
+        verbose_name = 'ТегАнкета'
+        verbose_name_plural = 'ТегиАнкеты'
     
+    class Meta:
+        verbose_name = 'ФотоАнкета'
+        verbose_name_plural = 'ФотоАнкеты'

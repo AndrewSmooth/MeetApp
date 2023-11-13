@@ -18,12 +18,15 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'backend:create_profile' %}">Анкета<span class="sr-only">(current)</span></a>
+        </li>
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'backend:register' %}">Регистрация<span class="sr-only">(current)</span></a>
           </li>
           {% if user.is_authenticated %}
           <li class="nav-item active">
-            <a class="nav-link" href="{% url 'backend:profile_change' %}">Редактировать профиль<span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{% url 'backend:user_change' %}">Редактировать профиль<span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'backend:password_change' %}">Изменить пароль<span class="sr-only">(current)</span></a>
@@ -32,7 +35,7 @@
             <a class="nav-link" href="{% url 'backend:logout' %}">Выйти<span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="{% url 'backend:profile_delete' %}">Удалить профиль<span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{% url 'backend:user_delete' %}">Удалить профиль<span class="sr-only">(current)</span></a>
           </li>
           {% else %}
           <li class="nav-item active">

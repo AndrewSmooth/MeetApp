@@ -49,8 +49,9 @@ class AdvUserAdmin (admin.ModelAdmin):
         ('is_active', 'is_activated'),
         ('is_staff', 'is_superuser'),
         ('groups', 'user_permissions'),
-        ('last_login', 'date_joined'))
-    readonly_fields = ('last_login', 'date_joined')
+        ('last_login', 'date_joined'),
+        ('last_online',))
+    readonly_fields = ('last_login', 'date_joined', 'last_online')
     actions = (send_activation_notifications,)
 
 admin.site.register(AdvUser, AdvUserAdmin)

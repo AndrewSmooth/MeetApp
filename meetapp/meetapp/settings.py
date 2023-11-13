@@ -119,7 +119,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -143,3 +142,11 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'backend.AdvUser' #Теперь AdvUser - модель каждого пользователя
+
+AUTHENTICATION_BACKENDS = (
+    'backend.backends.MyBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
