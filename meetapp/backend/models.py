@@ -31,6 +31,11 @@ class Tag(models.Model):
 class AdvUser(AbstractUser):
     is_activated = models.BooleanField(default=True, db_index = True, verbose_name = 'Прощёл активацию?')
     send_messages = models.BooleanField(default = True, verbose_name = 'Уведомлять о сообщениях?')
+    CHOICES = (
+        ('male', 'Мужчина'),
+        ('female', 'Женщина'),
+    )
+    gender = models.CharField(max_length=7, choices=CHOICES, default='Женщина')
 
     last_online = models.DateTimeField(blank=True, null=True, verbose_name='Последний онлайн')
 
@@ -54,11 +59,15 @@ class AdvUser(AbstractUser):
 
 
 class Profile(models.Model):
+    CHOICES = (
+        ('male', 'Мужчина'),
+        ('female', 'Женщина'),
+    )
     name = models.CharField(max_length=20, blank=False, verbose_name='Имя')
     age = models.IntegerField(db_index = True, blank=False, verbose_name = 'Возраст')
     city = models.CharField(max_length=168, db_index = True, blank=False, verbose_name='Город')
     description = models.TextField(blank=True, null=True, verbose_name='Расскажи о себе')
-    gender = models.CharField(max_length=10, db_index=True, blank=False, verbose_name='Пол')
+    gender = models.CharField(max_length=7, db_index=True, blank=False, verbose_name='Пол', choices=CHOICES)
     children = models.CharField(max_length=4, blank=True, null=True, verbose_name='Дети')
     education = models.CharField(max_length=150, blank=True, null=True, verbose_name='Образование')
     profession = models.CharField(max_length=50, blank=True, null=True, verbose_name='Работа')

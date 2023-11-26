@@ -45,12 +45,27 @@
       </ul>
     </div>
   </nav>
+  {% if profiles %}
 
+  {% for profile in profiles %}
+  {% if user.gender != profile.gender %}
+  <div>{{ profile.name }}, {{ profile.age }}</div>
+  <div>{{ profile.gender }}</div>
+  {% else %}
+  <div></div>
+
+  {% endif %}
+  {% endfor %}
+
+  {% else %}
+  <div>Анкет нет</div>
+  {% endif %}
     <!-- <header class="mb-4">
         <h1 class="display-1 text-center">Tasken Manager</h1>
     </header> -->
     {% block content %}
             {% endblock %}
+    
     
 </body>
 </html>

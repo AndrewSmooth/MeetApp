@@ -17,4 +17,5 @@ class CreateProfileView(CreateView):
     success_url = reverse_lazy('backend:start')
 
 def main(request):
-    return render(request, 'layout/basic.html')
+    profiles = Profile.objects.all()
+    return render(request, 'layout/basic.html', {'profiles': profiles})

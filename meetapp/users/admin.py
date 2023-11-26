@@ -37,11 +37,10 @@ class NonactivatedFilter(admin.SimpleListFilter):
         elif val == 'week':
             d = datetime.date.today() - datetime.timedelta(weeks=1)
             return queryset.filter(is_active=False, is_activated=False, date_joined__date__lt=d)
-        
 
 class AdvUserAdmin (admin.ModelAdmin):
-    list_display = ('username', 'is_activated', 'date_joined')
-    search_fields = ('username', 'email', 'first_name', 'last_name')
+    list_display = ('username', 'is_activated', 'date_joined', 'gender')
+    search_fields = ('username', 'email', 'first_name', 'last_name', 'gender')
     list_filter = (NonactivatedFilter,)
     fields = (
         ('username', 'email'),
@@ -50,7 +49,8 @@ class AdvUserAdmin (admin.ModelAdmin):
         ('is_staff', 'is_superuser'),
         ('groups', 'user_permissions'),
         ('last_login', 'date_joined'),
-        ('last_online',))
+        ('last_online',),
+        ('gender',))
     readonly_fields = ('last_login', 'date_joined', 'last_online')
     actions = (send_activation_notifications,)
 
