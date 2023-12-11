@@ -18,9 +18,17 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
+        {% if user.is_authenticated %}
+          {% if canCreate %}
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'backend:create_profile' %}">Анкета<span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="{% url 'backend:profile_create' %}">Создать анкету<span class="sr-only">(current)</span></a>
         </li>
+        {% else %}
+        <li class="nav-item active">
+        <a class="nav-link" href="{% url 'backend:profile_change' %}">Редактировать анкету<span class="sr-only">(current)</span></a>
+        </li>
+        {% endif %}
+        {% endif %}
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'backend:register' %}">Регистрация<span class="sr-only">(current)</span></a>
           </li>
@@ -49,8 +57,9 @@
 
   {% for profile in profiles %}
   {% if user.gender != profile.gender %}
-  <div>{{ profile.name }}, {{ profile.age }}</div>
-  <div>{{ profile.gender }}</div>
+  <a class="nav-link" href="{% url 'backend:view_profile' username=profile.advuser.username %}">
+    {{ profile.name }}, {{ profile.age }}
+</a>
   {% else %}
   <div></div>
 

@@ -6,27 +6,6 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.utils import timezone
 from django.core.cache import cache
 
-class Language(models.Model):
-    name = models.CharField(max_length=30, verbose_name='Язык')
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Язык'
-        verbose_name_plural = 'Языки'
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=40, verbose_name='Тег')
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Тег'
-        verbose_name_plural = 'Теги'
-
 
 class AdvUser(AbstractUser):
     is_activated = models.BooleanField(default=True, db_index = True, verbose_name = 'Прощёл активацию?')
@@ -58,6 +37,27 @@ class AdvUser(AbstractUser):
         super().delete(*args, **kwargs)
 
 
+class Language(models.Model):
+    name = models.CharField(max_length=30, verbose_name='Язык')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Язык'
+        verbose_name_plural = 'Языки'
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=40, verbose_name='Тег')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+
 class Profile(models.Model):
     CHOICES = (
         ('male', 'Мужчина'),
@@ -71,28 +71,30 @@ class Profile(models.Model):
     children = models.CharField(max_length=4, blank=True, null=True, verbose_name='Дети')
     education = models.CharField(max_length=150, blank=True, null=True, verbose_name='Образование')
     profession = models.CharField(max_length=50, blank=True, null=True, verbose_name='Работа')
-    languages = models.ManyToManyField(Language, through='LanguageProfile', verbose_name='Языки')
+    languages = models.ManyToManyField(Language, blank=False, through='LanguageProfile', verbose_name='Языки')
     tags = models.ManyToManyField(Tag, through='TagProfile', verbose_name='Интересы')
     images = models.TextField(verbose_name= 'url фото', blank=False, null=False, default=' ')
     alcohol = models.CharField(max_length=30, verbose_name='Алкоголь', blank=True, null=True,)
     smoke = models.CharField(verbose_name='Курение', blank=True, null=True,)
     horoscope = models.CharField(max_length=25, blank=True, null=True, verbose_name='Знак зодиака')
     target = models.CharField(max_length=35, blank=True, null=True, verbose_name='Цель')
+    advuser = models.OneToOneField(AdvUser, blank=True, on_delete= models.CASCADE, verbose_name='Пользователь')
 
     def __str__(self):
         return self.name
-    
+
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
+
 
     class Meta:
         verbose_name = 'Анкета'
         verbose_name_plural = 'Анкеты'
 
 class LanguageProfile(models.Model):
-    language = models.ForeignKey(Language, on_delete=models.RESTRICT, verbose_name='Язык')
-    profile = models.ForeignKey(Profile, on_delete=models.RESTRICT, verbose_name='Анкета пользователя')
+    language = models.ForeignKey(Language, on_delete=models.CASCADE, verbose_name='Язык')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Анкета пользователя')
 
     class Meta:
         verbose_name = 'ЯзыкАнкета'
@@ -100,13 +102,27 @@ class LanguageProfile(models.Model):
 
 
 class TagProfile(models.Model):
-    tag = models.ForeignKey(Tag, on_delete= models.RESTRICT, verbose_name='Тег')
-    profile = models.ForeignKey(Profile, on_delete=models.RESTRICT, verbose_name='Анкета пользователя')
+    tag = models.ForeignKey(Tag, on_delete= models.CASCADE, verbose_name='Тег')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Анкета пользователя')
 
     class Meta:
         verbose_name = 'ТегАнкета'
         verbose_name_plural = 'ТегиАнкеты'
-    
+
+
+class Match(models.Model):
+    giveLikeUser = models.ForeignKey(AdvUser, on_delete=models.CASCADE, related_name='likedProfilesGive', verbose_name='Поставивший лайк')
+    getLikeUser = models.ForeignKey(AdvUser, on_delete=models.CASCADE, related_name='likedProfilesGet',  verbose_name='Получивший лайк')
+
     class Meta:
-        verbose_name = 'ФотоАнкета'
-        verbose_name_plural = 'ФотоАнкеты'
+        verbose_name = 'Лайк'
+        verbose_name_plural = 'Лайки'
+
+
+class userProfile(models.Model):
+    user = models.ForeignKey(AdvUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Анкета пользователя')
+
+    class Meta:
+        verbose_name = 'ПользовательАнкета'
+        verbose_name_plural = 'ПользователиАнкеты'

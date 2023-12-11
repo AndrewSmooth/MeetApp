@@ -50,7 +50,7 @@ class AdvUserAdmin (admin.ModelAdmin):
         ('groups', 'user_permissions'),
         ('last_login', 'date_joined'),
         ('last_online',),
-        ('gender',))
+        ('gender',),)
     readonly_fields = ('last_login', 'date_joined', 'last_online')
     actions = (send_activation_notifications,)
 

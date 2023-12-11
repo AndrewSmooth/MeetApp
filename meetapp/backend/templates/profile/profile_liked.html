@@ -1,0 +1,10 @@
+{% extends "layout/basic.html" %}
+
+{% load bootstrap4 %}
+
+{% block title %}{{ user.name }}{% endblock %}
+{% block content %}
+<h2>Анкета пользователя {{ user.username }}</h2>
+<div>Лайк поставлен</div>
+<a class="nav-link" href="{% url 'backend:start' %}">На главную</a>
+{% endblock %}
