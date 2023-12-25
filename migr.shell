@@ -1,7 +1,0 @@
-. ./setenv.shell
-source meetappenv/bin/activate
-cd meetapp
-python manage.py makemigrations
-python manage.py migrate
-$SHELL
- 
